@@ -80,28 +80,28 @@ ask "Do you agree to the EULA?" \
 
 if ! getent passwd minecraft &>/dev/null; then
 	status "Creating minecraft user"
-	useradd --system --home-dir /var/lib/minecraft --no-create-home minecraft \
+	useradd --system --home-dir /minecraft/paper-minecraft-vane --no-create-home minecraft \
 		|| die "Could not create user 'minecraft'"
 fi
 
-mkdir -p /var/lib/minecraft
-chmod 700 /var/lib/minecraft
-chown minecraft: /var/lib/minecraft
+mkdir -p /minecraft/paper-minecraft-vane
+chmod 700 /minecraft/paper-minecraft-vane
+chown minecraft: /minecraft/paper-minecraft-vane
 
 
 ################################################################
 # Setup repository
 
-if [[ -e /var/lib/minecraft/deploy ]]; then
-	echo "[33mThe deploy directory /var/lib/minecraft/deploy already exists."
+if [[ -e /minecraft/paper-minecraft-vane/deploy ]]; then
+	echo "[33mThe deploy directory /minecraft/paper-minecraft-vane/deploy already exists."
 	echo "You can still run the installer again, but it may overwrite some"
 	echo "configuration files if you edited them in the meantime.[m"
 	ask "Are you sure you want to continue?" \
 		|| die "Installation aborted."
 fi
 
-cd /var/lib/minecraft \
-	|| die "Could not change into /var/lib/minecraft"
+cd /minecraft/paper-minecraft-vane \
+	|| die "Could not change into /minecraft/paper-minecraft-vane"
 
 if [[ -e deploy ]]; then
 	status "Updating deploy repository"
