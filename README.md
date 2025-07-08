@@ -51,7 +51,7 @@ In summary, the script will perform the following steps:
 At this point, your proxy server is already running and the actual
 server will be started once you connect to it. Now is the time to
 review or change the server configuration. The main directory of your server
-is `/var/lib/minecraft/deploy`. All files in that directory must be accessible to the `minecraft` user,
+is `/minecraft/paper-minecraft-vane`. All files in that directory must be accessible to the `minecraft` user,
 so before changing anything it is a good idea to open a terminal as the
 minecraft user by executing `sudo runuser -u minecraft bash`.
 
@@ -157,7 +157,7 @@ following commands as root:
 
 ```bash
 systemctl stop minecraft-proxy minecraft-server    # Stop services
-cd /var/lib/minecraft/deploy                       # Change into deploy directory
+cd /minecraft/paper-minecraft-vane/deploy                       # Change into deploy directory
 ./update.sh                                        # Run update script
 systemctl start minecraft-proxy minecraft-server   # Start services again
 ```
@@ -173,7 +173,7 @@ To update, execute the following commands as root:
 
 ```bash
 systemctl stop minecraft-proxy minecraft-server    # Stop services
-cd /var/lib/minecraft/deploy                       # Change into deploy directory
+cd /minecraft/paper-minecraft-vane/deploy                       # Change into deploy directory
 git pull                                           # Get updates from upstream
 ./contrib/install.sh                               # Re-install the service files
 systemctl start minecraft-proxy minecraft-server   # Start services again
