@@ -308,7 +308,7 @@ If you want to uninstall this server, simply execute the following commands:
 systemctl disable --now minecraft-{proxy,server}
 # Remove service files and attach script
 rm /lib/systemd/system/minecraft-{proxy,server}.service /usr/bin/minecraft-attach
-# Remove user and delete files in /var/lib/minecraft
+# Remove user and delete files in /minecraft/paper-minecraft-vane
 userdel -r minecraft
 ```
 
