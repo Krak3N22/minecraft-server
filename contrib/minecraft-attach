@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -o pipefail
+shopt -s nullglob
+
+[[ $EUID == 0 ]] || { echo "You have to be root (or use sudo) to attach to the console." >&2; exit 1; }
+
+SERVER_NAME=$1
+TMUX_SOCKET="/run/minecraft-$1/tmux"
+
+if [[ ! -e "$TMUX_SOCKET" ]]; then
+	echo "[1;31merror:[m Unknown server name '$SERVER_NAME', or service not started." >&2
+	AVAILABLE=("/run/minecraft-"*"/tmux")
+	if [[ "${#AVAILABLE[@]}" == 0 ]]; then
+		echo "There are currently no servers available. Check your system services." >&2
+	else
+		avail=(${AVAILABLE[@]#"/run/minecraft-"})
+		avail=(${avail[@]%"/tmux"})
+		echo "Available servers: ${avail[*]}" >&2
+	fi
+	exit 1
+fi
+
+exec runuser -u minecraft -- tmux -S "$TMUX_SOCKET" attach-session

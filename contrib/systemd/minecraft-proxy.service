@@ -1,0 +1,41 @@
+[Unit]
+Description=Minecraft server proxy
+After=network.target
+
+[Service]
+User=minecraft
+Group=minecraft
+
+RuntimeDirectory=minecraft-proxy
+
+Type=forking
+ExecStart=tmux -S /run/minecraft-proxy/tmux set -g default-shell /bin/bash ";" new-session -d "/var/lib/minecraft/deploy/contrib/server_loop.py ./start.sh"
+ExecStop=tmux -S /run/minecraft-proxy/tmux kill-server
+
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+NoNewPrivileges=true
+PrivateUsers=true
+ProtectClock=true
+ProtectKernelLogs=true
+ProtectHostname=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictNamespaces=yes
+
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+AmbientCapabilities=CAP_KILL
+CapabilityBoundingSet=CAP_KILL
+
+WorkingDirectory=/var/lib/minecraft/deploy/proxy
+ReadWriteDirectories=/var/lib/minecraft
+
+[Install]
+WantedBy=multi-user.target
