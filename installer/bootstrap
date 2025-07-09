@@ -11,8 +11,8 @@ install_dir="/minecraft/paper-minecraft-vane"
 ################################################################
 # Helper functions
 
-function die() { echo "\033[1;31merror:\033[m $*" >&2; exit 1; }
-function status() { echo "${had_status+$'\n'}\033[1;33m$*\033[m"; had_status=1; }
+function die() { echo "[1;31merror:[m $*" >&2; exit 1; }
+function status() { echo "${had_status+$'\n'}[1;33m$*[m"; had_status=1; }
 function flush_stdin() { while read -r -t 0.01 empty_stdin < "$TTY"; do true; done; }
 function ask() {
 	local response
@@ -40,7 +40,7 @@ function install_file() {
 abort=0
 for i in jq git tmux rdiff-backup java openssl; do
 	if ! type "$i" &>/dev/null; then
-		echo "\033[1;31mmissing: \033[1;33m$i\033[m" >&2
+		echo "[1;31mmissing: [1;33m$i[m" >&2
 		abort=1
 	fi
 done
@@ -54,13 +54,13 @@ done
 
 total_ram_gibi=$(free -g | grep -oP '\d+' | head -n1)
 if [[ $total_ram_gibi -le 4 ]]; then
-	echo "\033[31mYour system has \033[33m${total_ram_gibi}GiB\033[31m of RAM, which probably is not enough to run minecraft"
-	echo "without issues. The recommended minimum amount is _at least_ \033[33m12GiB\033[31m.\033[m"
+	echo "[31mYour system has [33m${total_ram_gibi}GiB[31m of RAM, which probably is not enough to run minecraft"
+	echo "without issues. The recommended minimum amount is _at least_ [33m12GiB[31m.[m"
 	ask "Continue anyway?" || die "Installation aborted."
 	echo
 elif [[ $total_ram_gibi -lt 12 ]]; then
-	echo "\033[31mYour system has \033[33m${total_ram_gibi}GiB\033[31m of RAM, which less than the recommended amount of"
-	echo "_at least_ \033[33m12GiB\033[31m. This will hurt the server performance significantly.\033[m"
+	echo "[31mYour system has [33m${total_ram_gibi}GiB[31m of RAM, which less than the recommended amount of"
+	echo "_at least_ [33m12GiB[31m. This will hurt the server performance significantly.[m"
 	ask "Continue anyway?" || die "Installation aborted."
 	echo
 fi
@@ -96,9 +96,9 @@ chown minecraft: "$install_dir"
 # Setup repository
 
 if [[ -e "$install_dir/deploy" ]]; then
-	echo "\033[33mThe deploy directory $install_dir/deploy already exists."
+	echo "[33mThe deploy directory $install_dir/deploy already exists."
 	echo "You can still run the installer again, but it may overwrite some"
-	echo "configuration files if you edited them in the meantime.\033[m"
+	echo "configuration files if you edited them in the meantime.[m"
 	ask "Are you sure you want to continue?" \
 		|| die "Installation aborted."
 fi
@@ -199,9 +199,9 @@ status "Installing service files"
 # Enable and start services
 
 status "Starting services ..."
-echo "\033[33mSystem services for the proxy and server will now be enabled and started."
+echo "[33mSystem services for the proxy and server will now be enabled and started."
 echo "If you want to adjust any proxy related configuration, you may want to start"
-echo "them manually later.\033[m"
+echo "them manually later.[m"
 echo
 
 postponed_service_message=""
@@ -213,7 +213,7 @@ else
 You have postponed enabling the system services. Make sure to execute the
 following command when you are ready to start the server:
 
-\033[1;32m    systemctl enable --now minecraft-server minecraft-proxy\033[m
+[1;32m    systemctl enable --now minecraft-server minecraft-proxy[m
 "
 fi
 
@@ -222,17 +222,17 @@ fi
 # Success message
 
 cat <<EOF
-\033[1m================================================================================\033[m
-                            \033[1;32mInstallation successful!\033[m
-\033[1m================================================================================\033[m
+[1m================================================================================[m
+                            [1;32mInstallation successful![m
+[1m================================================================================[m
 The server and proxy have been installed successfully! The PaperMC minecraft
 server will be started when a player connects via the proxy. Be aware that the
 first start may take a while due to world generation.
 
-Please make sure that TCP port \033[35m25565\033[m (server), \033[35m25566\033[m (multiplex 1) and \033[35m8100\033[m
+Please make sure that TCP port [35m25565[m (server), [35m25566[m (multiplex 1) and [35m8100[m
 (bluemap webserver) are exposed to the internet via a port-foward or similar
 mechanism. If you want to change your server configuration, please do so now.
 $postponed_service_message
-For more information, visit \033[35mhttps://github.com/oddlama/minecraft-server\033[m
-\033[1m================================================================================\033[m
+For more information, visit [35mhttps://github.com/oddlama/minecraft-server[m
+[1m================================================================================[m
 EOF
