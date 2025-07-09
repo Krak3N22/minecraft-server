@@ -119,8 +119,7 @@ fi
 cd deploy \
 	|| die "Could not change into deploy directory"
 
-chmod +x update.sh 
-	|| die "Could not make update.sh executable"
+chmod +x update.sh || die "Could not make update.sh executable"
 
 status "Configuring server"
 install_file <(echo "eula=true") server/eula.txt minecraft: 600
