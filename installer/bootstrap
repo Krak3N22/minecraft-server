@@ -106,6 +106,9 @@ fi
 cd "$install_dir" \
 	|| die "Could not change into $install_dir"
 
+chmod +x update.sh \
+	|| die "Could not make update.sh executable"
+
 if [[ -e deploy ]]; then
 	status "Updating deploy repository"
 	runuser -u minecraft -- git -C deploy pull \
@@ -118,8 +121,6 @@ fi
 
 cd deploy \
 	|| die "Could not change into deploy directory"
-
-chmod +x update.sh || die "Could not make update.sh executable"
 
 status "Configuring server"
 install_file <(echo "eula=true") server/eula.txt minecraft: 600
