@@ -4,7 +4,6 @@
 
 [![Landing Page](https://img.shields.io/badge/Landing_Page-informational.svg)](https://oddlama.github.io/minecraft-server)
 [![MIT License](https://img.shields.io/badge/license-MIT-informational.svg)](./LICENSE)
-[![Join us on Discord](https://img.shields.io/discord/907277628816388106.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/RueJ6A59x2)
 
 </div>
 
@@ -248,16 +247,6 @@ causing the entries to shift around unpredictably.
 
 The `.gitignore` files are already setup so you will not accidentally commit your whole world
 or some cache files. Only configuration files are considered by default.
-To actually commit your configs, you should fork this project and update your git remote:
-
-```bash
-# Fork on github first, then replace the remote url:
-cd deploy
-git remote set-url origin git@github.com:youruser/minecraft-server.git
-git add .
-git commit -m "Initial configuration commit"
-git push
-```
 
 ## 🔧 Default settings
 
@@ -292,7 +281,7 @@ by default from a freshly generated configuration:
 #### Vanilla settings
 
 - Set difficulty to HARD
-- Increase slots to 6666
+- Increase slots to 20
 - (asks) Increase view distance to 15 chunks
 - Increase entity broadcast range (allow players to see entities far away)
 - Disable spawn protection (use better setting from vane-admin if you want this)
@@ -305,21 +294,16 @@ If you want to uninstall this server, simply execute the following commands:
 
 ```bash
 # Disable & stop services
-systemctl disable --now minecraft-{proxy,server}
+sudo systemctl disable --now minecraft-{proxy,server}
 # Remove service files and attach script
-rm /lib/systemd/system/minecraft-{proxy,server}.service /usr/bin/minecraft-attach
-# Remove user and delete files in /minecraft/paper-minecraft-vane
-userdel -r minecraft
+sudo rm /lib/systemd/system/minecraft-{proxy,server}.service /usr/bin/minecraft-attach
+# Remove user
+sudo userdel -r minecraft
+# Delete files in /minecraft/paper-minecraft-vane/
+sudo rm -rf /minecraft/paper-minecraft-vane/
 ```
 
 ## 🛠️ Useful tools
 
 - [Cubiomes Viewer](https://github.com/Cubitect/cubiomes-viewer) - To find a good world seed
 - [MCASelector](https://github.com/Querz/mcaselector) - To trim e.g. unpopulated chunks
-
-## ❤️ Contributing
-
-Do you want to suggest a feature or extend this deploy?
-Please feel free to create an issue or pull-request on github!
-Also if you want to create and maintain a packaged version of this deploy for your favourite distribution's package manager,
-feel free to reach out on the [Vane Discord Server](https://discord.gg/RueJ6A59x2).
