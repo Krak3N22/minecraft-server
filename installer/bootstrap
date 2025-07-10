@@ -81,10 +81,12 @@ ask "Do you agree to the EULA?" \
 
 if ! getent passwd minecraft &>/dev/null; then
 	status "Creating minecraft user"
+	# Sätter hemkatalogen för minecraft-användaren till /var/lib/minecraft
 	useradd --system --home-dir /var/lib/minecraft --no-create-home minecraft \
 		|| die "Could not create user 'minecraft'"
 fi
 
+# Skapa och sätt behörigheter för den faktiska installationskatalogen, konsekvent med den önskade serverplatsen
 mkdir -p /minecraft/paper-minecraft-vane
 chmod 700 /minecraft/paper-minecraft-vane
 chown minecraft: /minecraft/paper-minecraft-vane
@@ -93,6 +95,7 @@ chown minecraft: /minecraft/paper-minecraft-vane
 ################################################################
 # Setup repository
 
+# Kontrollerar om deploy-katalogen redan finns i den valda installationssökvägen
 if [[ -e /minecraft/paper-minecraft-vane/deploy ]]; then
 	echo "[33mThe deploy directory /minecraft/paper-minecraft-vane/deploy already exists."
 	echo "You can still run the installer again, but it may overwrite some"
@@ -101,9 +104,11 @@ if [[ -e /minecraft/paper-minecraft-vane/deploy ]]; then
 		|| die "Installation aborted."
 fi
 
+# Navigerar till den valda installationskatalogen
 cd /minecraft/paper-minecraft-vane \
 	|| die "Could not change into /minecraft/paper-minecraft-vane"
 
+# Klonar eller uppdaterar deploy-repositoryt
 if [[ -e deploy ]]; then
 	status "Updating deploy repository"
 	runuser -u minecraft -- git -C deploy pull \
@@ -114,6 +119,7 @@ else
 		|| die "Could not clone repository"
 fi
 
+# Navigerar in i deploy-katalogen
 cd deploy \
 	|| die "Could not change into deploy directory"
 
@@ -179,27 +185,56 @@ fi
 
 echo
 status "Makes .sh files executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/update.sh || die "Could not make deply/update.sh executable"
+chmod 700 update.sh || die "Could not make deploy/update.sh executable"
 
 ##proxy
-chmod 700 /minecraft/paper-minecraft-vane/deploy/proxy/update.sh || die "Could not make the proxy update.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/proxy/start.sh || die "Could not make the proxy start.sh executable"
+chmod 700 proxy/update.sh || die "Could not make the proxy update.sh executable"
+chmod 700 proxy/start.sh || die "Could not make the proxy start.sh executable"
 
 ##server
-chmod 700 /minecraft/paper-minecraft-vane/deploy/server/update.sh || die "Could not make the server update.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/server/start.sh || die "Could not make the server start.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/server/backup.sh || die "Could not make the server backup.sh executable"
+chmod 700 server/update.sh || die "Could not make the server update.sh executable"
+chmod 700 server/start.sh || die "Could not make the server start.sh executable"
+chmod 700 server/backup.sh || die "Could not make the server backup.sh executable"
 
 ##contrib
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/install.sh || die "Could not make the contrib install.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/utils.sh || die "Could not make the contrib utils.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/organize_configs.sh || die "Could not make the contrib organize_configs.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/minecraft-attach || die "Could not make contrib minecraft-attach executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/server_loop.py || die "Could not make contrib server_loop.py executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/sort_server_properties.py || die "Could not make contrib sort_server_properties.py executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/sort_yaml.py || die "Could not make contrib sort_yaml.py executable"
+chmod 700 contrib/install.sh || die "Could not make the server install.sh executable"
+chmod 700 contrib/utils.sh || die "Could not make the server utils.sh executable"
+chmod 700 contrib/organize_configs.sh || die "Could not make the server organize_configs.sh executable"
+chmod 700 contrib/server_loop.py || die "Could not make contrib/server_loop.py executable"
+# NYA RADER: Gör fler script körbara
+chmod 700 contrib/minecraft-attach || die "Could not make contrib/minecraft-attach executable"
+chmod 700 contrib/sort_server_properties.py || die "Could not make contrib/sort_server_properties.py executable"
+chmod 700 contrib/sort_yaml.py || die "Could not make contrib/sort_yaml.py executable"
 echo
 
+# --- NYA ÄNDRINGAR FÖR SYSTEMD-TJÄNSTERNA ---
+status "Modifying systemd service files with correct paths"
+
+# För minecraft-proxy.service
+# Uppdatera WorkingDirectory till den faktiska platsen för proxy-filerna
+sed -i 's|^WorkingDirectory=.*|WorkingDirectory=/minecraft/paper-minecraft-vane/deploy/proxy|' systemd/minecraft-proxy.service \
+    || die "Could not modify WorkingDirectory in minecraft-proxy.service"
+# Uppdatera ExecStart för att köra proxy/start.sh från rätt plats med tmux
+sed -i 's|new-session -d .*|new-session -d /minecraft/paper-minecraft-vane/deploy/proxy/start.sh|' systemd/minecraft-proxy.service \
+    || die "Could not modify ExecStart command path in minecraft-proxy.service"
+# NYA ÄNDRINGAR: Lätta på säkerhetsinställningar för proxy-tjänsten
+sed -i '/^SystemCallFilter=/d' systemd/minecraft-proxy.service \
+    || die "Could not remove SystemCallFilter from minecraft-proxy.service"
+sed -i '/^RestrictNamespaces=/d' systemd/minecraft-proxy.service \
+    || die "Could not remove RestrictNamespaces from minecraft-proxy.service"
+sed -i 's|^ProtectSystem=strict|ProtectSystem=full|' systemd/minecraft-proxy.service \
+    || die "Could not modify ProtectSystem in minecraft-proxy.service"
+
+
+# För minecraft-server.service (gör samma ändringar för servern)
+# Uppdatera WorkingDirectory till den faktiska platsen för server-filerna
+sed -i 's|^WorkingDirectory=.*|WorkingDirectory=/minecraft/paper-minecraft-vane/deploy/server|' systemd/minecraft-server.service \
+    || die "Could not modify WorkingDirectory in minecraft-server.service"
+# Uppdatera ExecStart för att köra server_loop.py från rätt plats med tmux och dess argument
+# VIKTIGT: Återställer --block start.block argumentet så att servern blockerar tills filen tas bort
+sed -i 's|new-session -d .*server_loop.py .*|new-session -d /usr/bin/python3 /minecraft/paper-minecraft-vane/deploy/contrib/server_loop.py --block start.block ./start.sh :POST: ./backup.sh|' systemd/minecraft-server.service \
+    || die "Could not modify ExecStart command path in minecraft-server.service"
+# --- SLUT NYA ÄNDRINGAR ---
 
 
 echo
