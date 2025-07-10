@@ -35,7 +35,7 @@ quotes = [ "Simply connect to start the server!", "Nobody here yet." ]
 motd = "{SERVER_DISPLAY_NAME}\n§c~(°·°)~§7 | {QUOTE}"
 
 [managed_servers.server.start]
-cmd = ["rm", "../{SERVER}/start.block"]
+cmd = ["/usr/bin/rm", "/minecraft/paper-minecraft-vane/deploy/server/start.block"]
 kick_msg = "{SERVER_DISPLAY_NAME} §7is being started.\n§7Try again in §b10 Seconds§7 \\(^-^)/"
 # If this is not set, you must individually grant players the permission to start this server
 # by using an external permission plugin to assign one of `vane_proxy.start_server`, `vane_proxy.start_server.*` or `vane_proxy.start_server.<server_name>`
