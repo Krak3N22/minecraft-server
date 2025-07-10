@@ -178,6 +178,27 @@ if ask "Increase view-distance to 15 chunks?"; then
 fi
 
 echo
+status "Makes .sh files executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/update.sh || die "Could not make deply/update.sh executable"
+
+##proxy
+chmod 700 /minecraft/paper-minecraft-vane/deploy/proxy/update.sh || die "Could not make the proxy update.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/proxy/start.sh || die "Could not make the proxy start.sh executable"
+
+##server
+chmod 700 /minecraft/paper-minecraft-vane/deploy/server/update.sh || die "Could not make the server update.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/server/start.sh || die "Could not make the server start.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/server/backup.sh || die "Could not make the server backup.sh executable"
+
+##contrib
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/install.sh || die "Could not make the server install.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/utils.sh || die "Could not make the server utils.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/organize_configs.sh || die "Could not make the server organize_configs.sh executable"
+echo
+
+
+
+echo
 runuser -u minecraft -- ./update.sh < "$TTY" \
 	|| die "Could not update server files"
 
