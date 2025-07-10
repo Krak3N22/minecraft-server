@@ -76,8 +76,10 @@ function download_file() {
 	last_part=$(  echo "$1" | sed -E 's#^.*/([^/?]+).*#\1#')
 
 	# where should the plugin file be stored?
-	cache_path=${XDG_DATA_HOME:-$HOME/.local/share}/minecraft-server/cache
-	cache_path+="/$domain/$middle_path/$last_part"
+
+    cache_path="../../cache" # Relativ sökväg från deploy/proxy eller deploy/server
+    cache_path+="/$domain/$middle_path/$last_part"
+
 	# is it not in cache?
 	if [[ ! -f "$cache_path" ]]; then
 		mkdir -p "$(dirname "$cache_path")" # just in case
@@ -137,7 +139,7 @@ function download_velocity() {
 # $1: repo, e.g. "oddlama/vane"
 function latest_github_release_tag() {
 	local repo=$1
-	local cache=${XDG_CACHE_HOME:-$HOME/.cache}/minecraft-server
+	local cache="../../cache" # Relativ sökväg från deploy/proxy eller deploy/server
 	cache+="/github/$repo.txt"
 	##### :( github rate limits suck!
 	##### thankfully, we can check if there were modifications
