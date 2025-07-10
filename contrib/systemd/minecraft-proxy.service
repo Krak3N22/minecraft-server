@@ -9,7 +9,8 @@ Group=minecraft
 RuntimeDirectory=minecraft-proxy
 
 Type=forking
-ExecStart=tmux -S /run/minecraft-proxy/tmux set -g default-shell /bin/bash ";" new-session -d "/minecraft/paper-minecraft-vane/deploy/contrib/server_loop.py ./start.sh"
+ExecStart=tmux -S /run/minecraft-proxy/tmux set -g default-shell /bin/bash ";" new-session -d ./start.sh
+
 ExecStop=tmux -S /run/minecraft-proxy/tmux kill-server
 
 PrivateTmp=true
