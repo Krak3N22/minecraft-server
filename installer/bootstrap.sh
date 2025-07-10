@@ -81,7 +81,7 @@ ask "Do you agree to the EULA?" \
 
 if ! getent passwd minecraft &>/dev/null; then
 	status "Creating minecraft user"
-	useradd --system --home-dir /minecraft/paper-minecraft-vane --no-create-home minecraft \
+	useradd --system --home-dir /var/lib/minecraft --no-create-home minecraft \
 		|| die "Could not create user 'minecraft'"
 fi
 
@@ -103,9 +103,6 @@ fi
 
 cd /minecraft/paper-minecraft-vane \
 	|| die "Could not change into /minecraft/paper-minecraft-vane"
-
-chmod +x update.sh \
-	|| die "Could not make update.sh executable"
 
 if [[ -e deploy ]]; then
 	status "Updating deploy repository"
