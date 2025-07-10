@@ -110,7 +110,7 @@ if [[ -e deploy ]]; then
 		|| die "Could not pull repository"
 else
 	status "Cloning deploy repository"
-	runuser -u minecraft -- git clone "https://github.com/Krak3N22/minecraft-server" deploy \
+	runuser -u minecraft -- git clone "https://github.com/Krak3N22/minecraft-server.git" deploy \
 		|| die "Could not clone repository"
 fi
 
