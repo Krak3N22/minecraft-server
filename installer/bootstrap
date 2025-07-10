@@ -191,9 +191,13 @@ chmod 700 /minecraft/paper-minecraft-vane/deploy/server/start.sh || die "Could n
 chmod 700 /minecraft/paper-minecraft-vane/deploy/server/backup.sh || die "Could not make the server backup.sh executable"
 
 ##contrib
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/install.sh || die "Could not make the server install.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/utils.sh || die "Could not make the server utils.sh executable"
-chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/organize_configs.sh || die "Could not make the server organize_configs.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/install.sh || die "Could not make the contrib install.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/utils.sh || die "Could not make the contrib utils.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/organize_configs.sh || die "Could not make the contrib organize_configs.sh executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/minecraft-attach || die "Could not make contrib minecraft-attach executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/server_loop.py || die "Could not make contrib server_loop.py executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/sort_server_properties.py || die "Could not make contrib sort_server_properties.py executable"
+chmod 700 /minecraft/paper-minecraft-vane/deploy/contrib/sort_yaml.py || die "Could not make contrib sort_yaml.py executable"
 echo
 
 
