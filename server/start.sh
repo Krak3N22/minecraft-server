@@ -8,7 +8,7 @@ source "../contrib/utils.sh" || exit 1
 
 # Use 80% of RAM, but not more than 12GiB and not less than 1GiB
 total_ram_gibi=$(free -g | grep -oP '\d+' | head -n1)
-ram="$((total_ram_gibi * 8 / 10))"
+ram="$((total_ram_gibi * 7 / 10))"
 [[ "$ram" -le 12 ]] || ram=12
 [[ "$ram" -ge 1 ]] || ram=1
 
