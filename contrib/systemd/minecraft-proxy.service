@@ -34,7 +34,7 @@ SystemCallFilter=@system-service
 AmbientCapabilities=CAP_KILL
 CapabilityBoundingSet=CAP_KILL
 
-WorkingDirectory=/minecraft/paper-minecraft-vane/proxy
+WorkingDirectory=/minecraft/paper-minecraft-vane/deploy/proxy
 ReadWriteDirectories=/minecraft/paper-minecraft-vane
 
 [Install]
